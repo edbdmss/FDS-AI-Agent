@@ -29,3 +29,4 @@ frontend/dist/
 metastore_db/
 derby.log
 spark-warehouse/
+/artifacts/features/*
