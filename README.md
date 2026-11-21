@@ -8,7 +8,7 @@ LangGraph Agent가 고위험 거래의 과거 이력을 조사하여 보고서�
 
 개발 초기 골격과 실행 가능한 FastAPI `/health`, `/docs`를 구성했다.
 PaySim 전체 데이터 점검·시간순 분할 노트북을 실행하고 Parquet 저장·재검증을 완료했다.
-모델 학습, 조사, DB 연동, 프론트엔드는 아직 구현하지 않는다.
+저장된 LightGBM 모델의 거래 위험 점수·사기 판단 API를 추가한다. Agent 조사, DB 연동, 프론트엔드는 아직 구현하지 않는다.
 
 ## 빠른 시작
 
@@ -18,14 +18,33 @@ PaySim 전체 데이터 점검·시간순 분할 노트북을 실행하고 Parqu
 cd /Users/yueun/Desktop/FDS-AI-Agent
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[dev,ml,data,db,agent]'
 cp .env.example .env
 python -m uvicorn fds_agent.api.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 - API 문서: http://127.0.0.1:8000/docs
 - 프로세스 상태: http://127.0.0.1:8000/health
-- `/health`는 모델·DB 연결을 확인하는 readiness 검사가 아닙니다.
+- `/health`는 모델·DB 연결을 확인하는 readiness 검사가 아니다.
+- 거래 예측: `POST /v1/predict`에 거래 금액·유형·거래 전 잔액과 과거 이력 특징을 전달한다.
+- 저장 모델은 Git에서 제외하므로 추론 API 실행 전에 노트북 산출물 `artifacts/models/20261119T073653Z-1d0e70df/`를 준비한다.
+- 요청 본문에는 `step`, `type`, `amount`, `oldbalanceOrg`, `oldbalanceDest`를 전달한다. 계좌별 과거 이력 특징은 알려진 경우 함께 전달하며 기본값은 신규 계좌 이력 0건으로 처리한다.
+- 예측 응답은 `risk_score`, 고정 `threshold`, `is_fraud`, `model_run_id`를 반환한다. `risk_score`는 모델 점수이며 실제 환경에서 보정된 확률을 보장하지 않는다.
+
+```json
+{
+  "step": 355,
+  "type": "TRANSFER",
+  "amount": 500.0,
+  "oldbalanceOrg": 500.0,
+  "oldbalanceDest": 0.0,
+  "send_prior_count": 2,
+  "send_prior_amount_sum": 1200.0,
+  "send_prior_amount_mean": 600.0,
+  "send_prior_active_steps": 2,
+  "send_step_gap": 1
+}
+```
 
 ## 폴더 구조
 

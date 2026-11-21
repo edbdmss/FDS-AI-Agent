@@ -18,7 +18,7 @@ dependencies = [
 data = ["pyspark==4.0.1", "pandas>=2.2,<3", "pyarrow>=18,<24"]
 notebook = ["jupyterlab>=4,<5", "nbclient>=0.10,<1", "matplotlib>=3.9,<4"]
 ml = ["lightgbm>=4.5,<5", "scikit-learn>=1.5,<2", "joblib>=1.4,<2"]
-agent = ["langgraph>=1,<2"]
+agent = ["langgraph>=1,<2", "httpx>=0.27,<1"]
 db = ["sqlalchemy>=2,<3", "psycopg[binary]>=3.2,<4"]
 dev = ["pytest>=8,<10", "httpx>=0.27,<1", "ruff>=0.9,<1"]
 
