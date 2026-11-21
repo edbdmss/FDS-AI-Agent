@@ -3,6 +3,7 @@ from uuid import UUID
 from fastapi import FastAPI, HTTPException, Query
 from sqlalchemy import text
 
+from fds_agent.agent.chat import ChatRequest, chat
 from fds_agent.agent.investigation import investigate
 from fds_agent.core.config import get_settings
 from fds_agent.db.investigations import get_report, save_report
@@ -17,6 +18,12 @@ from fds_agent.models.inference import Prediction, TransactionFeatures, get_infe
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="0.1.0")
+
+
+@app.post("/v1/chat", tags=["chat"])
+def conversational_agent(request: ChatRequest) -> dict:
+    """자연어 요청으로 거래 조회와 조사 도구를 실행한다."""
+    return chat(request)
 
 
 @app.post("/v1/transactions/{transaction_id}/investigate", tags=["investigations"])

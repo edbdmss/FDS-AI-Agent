@@ -82,3 +82,7 @@ Spark UI 링크는 실행 중 Jobs·Stages·Executors 화면을 연다. 이벤�
 실행 계획에서는 CSV scan과 집계·shuffle 구간을 확인한다.
 
 실제 작업 분배 수치는 [두 executor의 Spark 실행 결과](../docs/spark_demo_results.md)에 기록한다.
+
+# 대화형 실행
+
+`10_conversational_agent.ipynb`의 첫 설정 셀을 실행하고 마지막 입력 셀에서 자연어로 대화한다. 중간 시연 셀은 거래 검색·후속 조사·보고서 재조회를 실제 실행한다. 별도 API 서버 없이 프로젝트의 `.venv` 커널로 실행한다.
